@@ -9,14 +9,12 @@
   "scripts": {
     "test": "truffle test",
     "compile": "truffle compile",
-    "migrate":"truffle migrate",
+    "migrate": "truffle migrate",
     "test:bsc": "truffle test --config=truffle-config.bsc.js --network ",
     "compile:bsc": "truffle compile --config=truffle-config.bsc.js",
     "migrate:bsc": "truffle migrate --config=truffle-config.bsc.js --network "
   },
-  "repository": {
-    
-  },
+  "repository": {},
   "keywords": [
     "BSC",
     "BNB Smart Chain",
@@ -24,9 +22,11 @@
   ],
   "author": "",
   "license": "MIT",
-    "devDependencies": {
+  "devDependencies": {
     "@truffle/hdwallet-provider": "^1.4.2",
     "dotenv": "^9.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.3"
+  }
 }
