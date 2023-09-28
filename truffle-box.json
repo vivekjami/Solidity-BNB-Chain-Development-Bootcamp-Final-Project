@@ -1,0 +1,11 @@
+{
+  "ignore": [
+    "*.png"
+  ],
+  "commands": {
+      "Compile Contracts": "truffle compile"
+  },
+  "hooks": {
+      "post-unpack": "npm install"
+  }
+}
