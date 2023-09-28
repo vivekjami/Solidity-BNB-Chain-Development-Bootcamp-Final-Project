@@ -9,7 +9,7 @@ contract CarRentalPlatform is ReentrancyGuard {
 
   //Counter
   using Counters for Counters.Counter;
-  Counters.Counter private_counter;
+  Counters.Counter private _counter;
 
   //Owner
   address private owner;
@@ -123,7 +123,7 @@ contract CarRentalPlatform is ReentrancyGuard {
   //editCarStatus #onlyOwner #existingcar
   function editCarStatus(uint id, Status status) external onlyOwner{
     require(cars[id].id !=0 , "Car with given ID does not exist");
-    cars[id].status =stauts;
+    cars[id].status =status;
 
     emit CarStatusEdited(id, status);
   }
@@ -133,7 +133,7 @@ contract CarRentalPlatform is ReentrancyGuard {
     require(isUser(msg.sender), "User does not exist!");
     require(cars[id].status== Status.Available, "Car is not Available for use");
     require(users[msg.sender].rentedCarId == 0, "User has Already rented a car");
-    require(user[msg.sender].debt == 0, "User has an outstanding debt!");
+    require(users[msg.sender].debt == 0, "User has an outstanding debt!");
 
     users[msg.sender].start = block.timestamp;
     users[msg.sender].rentedCarId= id;
@@ -216,24 +216,70 @@ contract CarRentalPlatform is ReentrancyGuard {
   }
 
   //Query functions
-
+  
   //getOwner
+  function getOwner() external view returns(address){
+    return owner;
+  }
 
   //isUser
+  function isUser(address walletAddress) private view returns(bool){
+    return users[walletAddress].walletAddress != address(0);
+  }
 
   //getUser #existingUser
+  function getUser(address walletAddress) external view returns(User memory){
+    require(isUser(walletAddress), "User does not exist");
+    return users[walletAddress];
+  }
 
   //getCar #existingcar
+  function getCar(uint id) external view returns(Car memory){
+    require(cars[id].id !=0 , "Car does not exist");
+    return cars[id];
+  }
 
   //getCarByStatus
+  function getCarsByStatus(Status _status) external view returns(Car[] memory){
+    uint count = 0;
+    uint length = _counter.current();
+    for(uint i = 1; i <= length ; i++){
+      if(cars[i].status == _status){
+        count++;
+      }
+    }
+    Car[] memory carWithStatus = new Car[](count);
+    count =0;
+    for(uint i = 1; i<= length ; i++){
+      if(cars[i].status == _status){
+        carWithStatus[count]= cars[i];
+        count++;
+      }
+    }
+
+    return carWithStatus;
+  }
 
   //calculateDebt
+  function calculateDebt(uint usedSeconds,uint rentFee) private pure returns(uint){
+    uint usedMinutes = usedSeconds / 60;
+    return usedMinutes*rentFee;
+  }
 
   //getCurrentCount
+  function getCurrentCount() external view returns(uint){
+    return _counter.current();
+  }
 
   //getContractBalance #onlyOwner
+  function getContractBalance() external view onlyOwner returns(uint){
+    return address(this).balance;
+  }
 
   //getTotalPayments #onlyOwner
+  function getTotalPayments() external view onlyOwner returns(uint){
+    return totalPayments;
+  }
 
   
 }
